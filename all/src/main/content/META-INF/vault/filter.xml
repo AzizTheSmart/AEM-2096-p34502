@@ -15,6 +15,6 @@
   ~ limitations under the License.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <workspaceFilter version="1.0">
-    <filter root="/apps/aem2096-packages"/>
-    <filter root="/apps/aem2096-vendor-packages"/>
+    <filter root="/apps/wknd-packages"/>
+    <filter root="/apps/wknd-vendor-packages"/>
 </workspaceFilter>

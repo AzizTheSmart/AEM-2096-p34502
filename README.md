@@ -1,20 +1,33 @@
-# Sample AEM project template
+![Maven CI](https://github.com/adobe/aem-guides-wknd/actions/workflows/maven.yml/badge.svg)
 
-This is a project template for AEM-based applications. It is intended as a best-practice set of examples as well as a potential starting point to develop your own functionality.
+# WKND Sites Project
+
+This is the code for the WKND Reference site: [https://www.wknd.site/](https://www.wknd.site/)
+
+There is also a corresponding tutorial where you can learn how to implement a website using the latest standards and technologies in Adobe Experience Manager (AEM):
+
+1. [WKND Tutorial Overview](https://docs.adobe.com/content/help/en/experience-manager-learn/getting-started-wknd-tutorial-develop/overview.html)
+2. [Project Setup](https://docs.adobe.com/content/help/en/experience-manager-learn/getting-started-wknd-tutorial-develop/project-setup.html)
+3. [Component Basics](https://docs.adobe.com/content/help/en/experience-manager-learn/getting-started-wknd-tutorial-develop/component-basics.html)
+4. [Pages and Templates](https://docs.adobe.com/content/help/en/experience-manager-learn/getting-started-wknd-tutorial-develop/pages-templates.html)
+5. [Client-Side Libraries](https://docs.adobe.com/content/help/en/experience-manager-learn/getting-started-wknd-tutorial-develop/client-side-libraries.html)
+6. [Style a Component](https://docs.adobe.com/content/help/en/experience-manager-learn/getting-started-wknd-tutorial-develop/style-system.html)
+7. [Custom Component](https://docs.adobe.com/content/help/en/experience-manager-learn/getting-started-wknd-tutorial-develop/custom-component.html)
+8. [Unit Testing](https://docs.adobe.com/content/help/en/experience-manager-learn/getting-started-wknd-tutorial-develop/unit-testing.html)
 
 ## Modules
 
-The main parts of the template are:
+The main parts of the project are:
 
-* core: Java bundle containing all core functionality like OSGi services, listeners or schedulers, as well as component-related Java code such as servlets or request filters.
-* it.tests: Java based integration tests
-* ui.apps: contains the /apps (and /etc) parts of the project, ie JS&CSS clientlibs, components, and templates
-* ui.content: contains sample content using the components from the ui.apps
-* ui.config: contains runmode specific OSGi configs for the project
-* ui.frontend: an optional dedicated front-end build mechanism (Angular, React or general Webpack project)
-* ui.tests: Selenium based UI tests
-* all: a single content package that embeds all of the compiled modules (bundles and content packages) including any vendor dependencies
-* analyse: this module runs analysis on the project which provides additional validation for deploying into AEMaaCS
+* **core**: Java bundle containing all core functionality like OSGi services, listeners or schedulers, as well as component-related Java code such as servlets or request filters.
+* **ui.apps**: contains the /apps (and /etc) parts of the project, ie JS & CSS clientlibs, components, templates, runmode specific configs as well as Hobbes-tests
+* **ui.content**: contains mutable content (not /apps) that is integral to the running of the WKND site. This include template types, templates, policies and base-line organization page and asset structures.
+* **ui.content.sample**: WKND is often used as a pre-built reference site for demos and training; making it useful to have a full sample site with content and assets. HOWEVER the storage of authored content (pages, assets) in git is rare and not recommended for real-world implementations.
+* **ui.tests**: Java bundle containing JUnit tests that are executed server-side. This bundle is not to be deployed onto production.
+* **ui.launcher**: contains glue code that deploys the ui.tests bundle (and dependent bundles) to the server and triggers the remote JUnit execution
+* **dispatcher**: contains dispatcher configurations for AEM as a Cloud Service
+* **repository-structure**:  Empty package that defines the structure of the Adobe Experience Manager repository the Code packages in this project deploy into.
+* **all**: An empty module that embeds the above sub-modules and any vendor dependencies into a single deployable package.
 
 ## How to build
 
@@ -42,82 +55,53 @@ Or to deploy only a single content package, run in the sub-module directory (i.e
 
     mvn clean install -PautoInstallPackage
 
+### Building for AEM 6.x.x
+
+The project has been designed for **AEM as a Cloud Service**. The project is also backward compatible with AEM **6.4.8** and **6.5.5** by adding the `classic` profile when executing a build, i.e:
+
+    mvn clean install -PautoInstallSinglePackage -Pclassic
+
+#### When using an IDE
+
+When using an IDE like IntelliJ, please make sure to check `classic` in your Maven Profile tab.
+
+Example screenshot:
+
+![maven profile tab with classic option checked](https://experienceleague.adobe.com/docs/experience-manager-learn/assets/intelliJMavenProfiles.png)
+
+### WKND Sample content
+
+By default, sample content from `ui.content.sample` will be deployed and installed along with the WKND code base. The WKND reference site is used for demo and training purposes and having a pre-built, fully authored site is useful. However, the behavior of including a full reference site (pages, images, etc...) in source control is *unusual* and is **not** recommended for a real-world implementation.
+
+Including `ui.content.sample` will **overwrite** any authored content during each build. If you wish to disable this behavior modify the [filter.xml](ui.content.sample/src/main/content/META-INF/vault/filter.xml) file and update the `mode=merge` attribute to avoid overwriting the paths.
+
+```diff
+- <filter root="/content/wknd" />
++ <filter root="/content/wknd" mode="merge"/>
+```
+
+### Upgrading versions
+
+If upgrading to a new version of WKND, it is recommended up modify the filters in `ui.content.sample` to remove the `mode="merge"` attribute prior to deploying.
+
 ## Testing
 
 There are three levels of testing contained in the project:
 
-### Unit tests
+* unit test in core: this show-cases classic unit testing of the code contained in the bundle. To test, execute:
 
-This show-cases classic unit testing of the code contained in the bundle. To
-test, execute:
-
+    ```
     mvn clean test
+    ```
 
-### Integration tests
+* server-side integration tests: this allows to run unit-like tests in the AEM-environment, ie on the AEM server. To test, execute:
 
-This allows running integration tests that exercise the capabilities of AEM via
-HTTP calls to its API. To run the integration tests, run:
+    ```
+    mvn clean verify -PintegrationTests
+    ```
 
-    mvn clean verify -Plocal
+* client-side Hobbes.js tests: JavaScript-based browser-side tests that verify browser-side behavior. To test, go in the browser, open the page in 'Developer mode', open the left panel and switch to the 'Tests' tab and find the generated 'MyName Tests' and run them.
 
-Test classes must be saved in the `src/main/java` directory (or any of its
-subdirectories), and must be contained in files matching the pattern `*IT.java`.
-
-The configuration provides sensible defaults for a typical local installation of
-AEM. If you want to point the integration tests to different AEM author and
-publish instances, you can use the following system properties via Maven's `-D`
-flag.
-
-| Property | Description | Default value |
-| --- | --- | --- |
-| `it.author.url` | URL of the author instance | `http://localhost:4502` |
-| `it.author.user` | Admin user for the author instance | `admin` |
-| `it.author.password` | Password of the admin user for the author instance | `admin` |
-| `it.publish.url` | URL of the publish instance | `http://localhost:4503` |
-| `it.publish.user` | Admin user for the publish instance | `admin` |
-| `it.publish.password` | Password of the admin user for the publish instance | `admin` |
-
-The integration tests in this archetype use the [AEM Testing
-Clients](https://github.com/adobe/aem-testing-clients) and showcase some
-recommended [best
-practices](https://github.com/adobe/aem-testing-clients/wiki/Best-practices) to
-be put in use when writing integration tests for AEM.
-
-## Static Analysis
-
-The `analyse` module performs static analysis on the project for deploying into AEMaaCS. It is automatically
-run when executing
-
-    mvn clean install
-
-from the project root directory. Additional information about this analysis and how to further configure it
-can be found here https://github.com/adobe/aemanalyser-maven-plugin
-
-### UI tests
-
-They will test the UI layer of your AEM application using Selenium technology. 
-
-To run them locally:
-
-    mvn clean verify -Pui-tests-local-execution
-
-This default command requires:
-* an AEM author instance available at http://localhost:4502 (with the whole project built and deployed on it, see `How to build` section above)
-* Chrome browser installed at default location
-
-Check README file in `ui.tests` module for more details.
-
-## ClientLibs
-
-The frontend module is made available using an [AEM ClientLib](https://helpx.adobe.com/experience-manager/6-5/sites/developing/using/clientlibs.html). When executing the NPM build script, the app is built and the [`aem-clientlib-generator`](https://github.com/wcm-io-frontend/aem-clientlib-generator) package takes the resulting build output and transforms it into such a ClientLib.
-
-A ClientLib will consist of the following files and directories:
-
-- `css/`: CSS files which can be requested in the HTML
-- `css.txt` (tells AEM the order and names of files in `css/` so they can be merged)
-- `js/`: JavaScript files which can be requested in the HTML
-- `js.txt` (tells AEM the order and names of files in `js/` so they can be merged
-- `resources/`: Source maps, non-entrypoint code chunks (resulting from code splitting), static assets (e.g. icons), etc.
 
 ## Maven settings
 

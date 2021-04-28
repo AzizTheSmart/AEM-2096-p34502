@@ -34,7 +34,7 @@ services:
     volumes:
       - ./target/reports:/tmp/reports
       - 'shared:/tmp/shared'
-    image: 'com.aem2096-aem-aem2096-project.ui.tests/ui.tests:latest'
+    image: 'com.adobe.aem.guides-aem-guides-wknd.ui.tests/ui.tests:latest'
   selenium-chrome:
     image: 'selenium/standalone-chrome-debug:latest'
     ports:

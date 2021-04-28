@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <!-- ====================================================================== -->
-    <!-- P A R E N T  P R O J E C T  D E S C R I P T I O N                      -->
-    <!-- ====================================================================== -->
-    <parent>
-        <groupId>com.aem2096</groupId>
-        <artifactId>aem-aem2096-project</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <!-- ====================================================================== -->
+  <!-- P A R E N T  P R O J E C T  D E S C R I P T I O N                      -->
+  <!-- ====================================================================== -->
+  <parent>
+    <groupId>com.adobe.aem.guides</groupId>
+    <artifactId>aem-guides-wknd</artifactId>
+    <version>0.3.0</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
 
-    <artifactId>aem-aem2096-project.dispatcher.cloud</artifactId>
-    <packaging>pom</packaging>
-    <name>aem2096 - Dispatcher</name>
-    <description>HTTP &amp; Dispatcher configurations for aem2096</description>
+  <artifactId>aem-guides-wknd.dispatcher.cloud</artifactId>
+  <packaging>pom</packaging>
+  <name>WKND Sites Project - Dispatcher</name>
+  <description>HTTP &amp; Dispatcher configurations for WKND Sites Project</description>
+  
 
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.1.1</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -155,7 +155,7 @@
                             <execution>
                                 <id>enforce-checksum-of-immutable-files</id>
                                 <goals>
-                                    <goal>enforce</goal>
+                                    <goal>display-info</goal>
                                 </goals>
                                 <configuration>
                                     <rules>

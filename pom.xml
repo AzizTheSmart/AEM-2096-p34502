@@ -14,15 +14,23 @@
  |  See the License for the specific language governing permissions and
  |  limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.aem2096</groupId>
-    <artifactId>aem-aem2096-project</artifactId>
+    <groupId>com.adobe.aem.guides</groupId>
+    <artifactId>aem-guides-wknd</artifactId>
     <packaging>pom</packaging>
-    <version>0.0.1-SNAPSHOT</version>
-    <description>aem2096</description>
+    <version>0.3.0</version>
+     <name>WKND Sites Project - Reactor Project</name>
+    <description>WKND Sites Project</description>
+    <url>https://github.com/adobe/aem-guides-wknd</url>
+    <inceptionYear>2019</inceptionYear>
+
+    <licenses>
+		<license>
+			<name>MIT License</name>
+			<url>http://www.opensource.org/licenses/mit-license.php</url>
+		</license>
+	</licenses>
 
     <modules>
         <module>all</module>
@@ -32,6 +40,7 @@
         <module>ui.apps.structure</module>
         <module>ui.config</module>
         <module>ui.content</module>
+        <module>ui.content.sample</module>
         <module>it.tests</module>
         <module>dispatcher</module>
         <module>ui.tests</module>
@@ -47,28 +56,57 @@
         <sling.password>admin</sling.password>
         <vault.user>admin</vault.user>
         <vault.password>admin</vault.password>
-
         <bnd.version>5.1.2</bnd.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <aem.sdk.api>2021.4.5181.20210416T172032Z-210325</aem.sdk.api>
+        <aem.sdk.api>2021.4.5139.20210407T003220Z-210325</aem.sdk.api>
+        <componentGroupName>WKND Site</componentGroupName>
+        <core.wcm.components.version>2.15.2</core.wcm.components.version>
+        <uber.jar.version>6.4.4</uber.jar.version>
         <aemanalyser.version>0.9.2</aemanalyser.version>
-        <componentGroupName>aem2096</componentGroupName>
     </properties>
+
+    <organization>
+        <name>Adobe</name>
+        <url>http://www.adobe.com/</url>
+    </organization>
+
+     <developers>
+        <developer>
+            <id>aem-guides-wknd</id>
+            <organization>Adobe</organization>
+            <organizationUrl>https://www.adobe.com</organizationUrl>
+            <url>https://docs.adobe.com/content/help/en/experience-manager-learn/getting-started-wknd-tutorial-develop/overview.html</url>
+        </developer>
+    </developers>
+
+     <scm>
+        <connection>scm:git:git@github.com:adobe/aem-guides-wknd.git</connection>
+        <developerConnection>scm:git:git@github.com:adobe/aem-guides-wknd.git</developerConnection>
+        <url>https://github.com/adobe/aem-guides-wknd/tree/master</url>
+        <tag>aem-guides-wknd-0.3.0</tag>
+    </scm>
 
     <build>
         <plugins>
             <!-- Maven Release Plugin -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
-                <version>2.5.3</version>
+                <version>3.0-r1585899</version>
                 <configuration>
-                    <scmCommentPrefix>[maven-scm] :</scmCommentPrefix>
                     <preparationGoals>clean install</preparationGoals>
-                    <goals>install</goals>
+                    <goals>deploy</goals>
                     <releaseProfiles>release</releaseProfiles>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <projectVersionPolicyId>OddEvenVersionPolicy</projectVersionPolicyId>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.release</groupId>
+                        <artifactId>maven-release-oddeven-policy</artifactId>
+                        <version>3.0-r1585899</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <!-- Maven Source Plugin -->
             <plugin>
@@ -110,17 +148,21 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+             <!-- Staging Maven Plugin -->
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <!-- manually release in https://oss.sonatype.org/#stagingRepositories after the Maven release build -->
+                    <autoReleaseAfterClose>false</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
         </plugins>
         <pluginManagement>
             <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-assembly-plugin</artifactId>
-                    <version>3.3.0</version>
-                    <configuration>
-                        <tarLongFileMode>posix</tarLongFileMode>
-                    </configuration>
-                </plugin>
                 <plugin>
                     <groupId>com.github.eirslett</groupId>
                     <artifactId>frontend-maven-plugin</artifactId>
@@ -256,7 +298,7 @@ Bundle-DocURL:
                 <plugin>
                     <groupId>org.apache.sling</groupId>
                     <artifactId>htl-maven-plugin</artifactId>
-                    <version>2.0.2-1.4.0</version>
+                    <version>1.3.4-1.4.0</version>
                     <configuration>
                         <failOnWarnings>true</failOnWarnings>
                     </configuration>
@@ -266,9 +308,12 @@ Bundle-DocURL:
                     <groupId>org.apache.jackrabbit</groupId>
                     <artifactId>filevault-package-maven-plugin</artifactId>
                     <extensions>true</extensions>
-                    <version>1.1.6</version>
+                    <version>1.1.4</version>
                     <configuration>
                         <filterSource>src/main/content/META-INF/vault/filter.xml</filterSource>
+                        <properties>
+                            <cloudManagerTarget>none</cloudManagerTarget>
+                        </properties>
                         <validatorsSettings>
                             <jackrabbit-nodetypes>
                                 <options>
@@ -282,7 +327,7 @@ Bundle-DocURL:
                         <dependency>
                             <groupId>biz.netcentric.aem</groupId>
                             <artifactId>aem-nodetypes</artifactId>
-                            <version>6.5.7.0</version>
+                            <version>6.5.5.0</version>
                         </dependency>
                     </dependencies>
                 </plugin>
@@ -389,6 +434,11 @@ Bundle-DocURL:
                             </pluginExecutions>
                         </lifecycleMappingMetadata>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.sonatype.plugins</groupId>
+                    <artifactId>nexus-staging-maven-plugin</artifactId>
+                    <version>1.6.8</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -556,6 +606,101 @@ Bundle-DocURL:
                 </pluginManagement>
             </build>
         </profile>
+        <profile>
+            <id>release</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                </property>
+            </activation>
+            <build>
+                <!-- https://central.sonatype.org/pages/requirements.html -->
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+         <profile>
+            <id>ossrh</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <distributionManagement>
+                <!-- the nexus-staging-maven-plugin only needs a snapshot repository -->
+                <snapshotRepository>
+                     <id>ossrh</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+                </snapshotRepository>
+            </distributionManagement>
+        </profile>
+        <profile>
+            <id>cm-java-11</id>
+            <activation>
+                  <property>
+                        <name>env.CM_BUILD</name>
+                  </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-toolchains-plugin</artifactId>
+                        <version>1.1</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>toolchain</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <toolchains>
+                                <jdk>
+                                    <version>1.11</version>
+                                    <vendor>oracle</vendor>
+                                </jdk>
+                            </toolchains>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 
 
@@ -564,6 +709,8 @@ Bundle-DocURL:
     <!-- ====================================================================== -->
     <dependencyManagement>
         <dependencies>
+
+        <!-- AEM as a Cloud Service SDK -->
             <dependency>
                 <groupId>com.adobe.aem</groupId>
                 <artifactId>aem-sdk-api</artifactId>
@@ -571,6 +718,25 @@ Bundle-DocURL:
                 <scope>provided</scope>
             </dependency>
 
+             <!-- AEM Core Components -->
+            <dependency>
+                <groupId>com.adobe.cq</groupId>
+                <artifactId>core.wcm.components.core</artifactId>
+                <version>${core.wcm.components.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.adobe.cq</groupId>
+                <artifactId>core.wcm.components.content</artifactId>
+                <type>zip</type>
+                <version>${core.wcm.components.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.adobe.cq</groupId>
+                <artifactId>core.wcm.components.config</artifactId>
+                <type>zip</type>
+                <version>${core.wcm.components.version}</version>
+            </dependency>
 
             <!-- Testing -->
             <dependency>

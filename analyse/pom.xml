@@ -21,18 +21,18 @@
         <!-- P A R E N T  P R O J E C T  D E S C R I P T I O N                      -->
         <!-- ====================================================================== -->
     <parent>
-        <groupId>com.aem2096</groupId>
-        <artifactId>aem-aem2096-project</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <groupId>com.adobe.aem.guides</groupId>
+        <artifactId>aem-guides-wknd</artifactId>
+        <version>0.3.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <!-- ====================================================================== -->
     <!-- P R O J E C T  D E S C R I P T I O N                                   -->
     <!-- ====================================================================== -->
-    <artifactId>aem-aem2096-project.analyse</artifactId>
-    <name>aem2096 - Project Analyser</name>
-    <description>Project analysis for aem2096</description>
+    <artifactId>aem-guides-wknd.analyse</artifactId>
+    <name>WKND Sites Project - Project Analyser</name>
+    <description>Project analysis for WKND Sites Project</description>
     <packaging>aem-analyse</packaging>
 
     <build>
@@ -42,13 +42,32 @@
                 <artifactId>aemanalyser-maven-plugin</artifactId>
                 <extensions>true</extensions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.1.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>assembly.xml</descriptor>
+                            </descriptors>
+                            <appendAssemblyId>false</appendAssemblyId>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
     <dependencies>
         <dependency>
-            <groupId>com.aem2096</groupId>
-            <artifactId>aem-aem2096-project.all</artifactId>
+            <groupId>com.adobe.aem.guides</groupId>
+            <artifactId>aem-guides-wknd.all</artifactId>
             <version>${project.version}</version>
             <type>zip</type>
         </dependency>
